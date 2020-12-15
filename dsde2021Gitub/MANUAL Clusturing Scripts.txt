@@ -1,0 +1,54 @@
+MongoDB MANUAL Clusturing Scripts
+
+C:\
+CD C:\PROGRAM FILES\MONGODB\SERVER\3.0\BIN	
+
+//CLUSTER_Node-1
+mongod.exe --shardsvr --port 27017 --logpath "c:\data\log\log11.log" --logappend --dbpath "c:\data\s1\d1" --replSet myshed1
+mongod.exe --shardsvr --port 27117 --logpath "c:\data\log\log12.log" --logappend --dbpath "c:\data\s1\d2" --replSet myshed1
+mongod.exe --shardsvr --port 27217 --logpath "c:\data\log\log13.log" --logappend --dbpath "c:\data\s3\d3" --replSet myshed1
+
+//CLUSTER_Node-2
+mongod.exe --shardsvr --port 27018 --logpath "c:\data\log\log21.log" --logappend --dbpath "c:\data\s2\d1" --replSet myshed2
+mongod.exe --shardsvr --port 27118 --logpath "c:\data\log\log22.log" --logappend --dbpath "c:\data\s2\d2" --replSet myshed2
+mongod.exe --shardsvr --port 27218 --logpath "c:\data\log\log23.log" --logappend --dbpath "c:\data\s2\d3" --replSet myshed2
+
+//CLUSTER_Node-3
+mongod.exe --shardsvr --port 27019 --logpath "c:\data\log\log31.log" --logappend --dbpath "c:\data\s3\d1" --replSet myshed3
+mongod.exe --shardsvr --port 27119 --logpath "c:\data\log\log32.log" --logappend --dbpath "c:\data\s3\d2" --replSet myshed3
+mongod.exe --shardsvr --port 27219 --logpath "c:\data\log\log33.log" --logappend --dbpath "c:\data\s3\d3" --replSet myshed3
+
+mongo.exe --host 192.168.0.11 --port 27017
+mongo.exe --host 192.168.0.11 --port 27117
+mongo.exe --host 192.168.0.11 --port 27217
+
+********************************************************
+conf1={_id: "myshed1",members: [{ _id : 0, host : "localhost:27017" },{ _id : 1, host : "localhost:27117" },{ _id : 2, host : "localhost:27217" }]
+}
+
+rs.initiate(conf1); 
+
+conf2={_id: "myshed2",
+members: [
+{ _id : 0, host : "localhost:27018" },
+{ _id : 1, host : "localhost:27118" },
+{ _id : 2, host : "localhost:27218" }
+]
+}
+
+rs.initiate(conf2); 
+
+conf3={_id: "myshed3",
+members: [
+{ _id : 0, host : "localhost:27019" },
+{ _id : 1, host : "localhost:27119" },
+{ _id : 2, host : "localhost:27219" }
+]
+}
+
+rs.initiate(conf3); 
+
+ 
+***************************
+db.collection.dropIndex(index)¶
+Drops or removes the specified index from a collection. The db.collection.dropIndex() method provides a wrapper around the dropIndexes command
